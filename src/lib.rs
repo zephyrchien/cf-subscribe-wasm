@@ -3,6 +3,7 @@ extern crate wasm_bindgen;
 
 mod utils;
 
+
 use cfg_if::cfg_if;
 use wasm_bindgen::prelude::*;
 
@@ -17,6 +18,12 @@ cfg_if! {
 }
 
 #[wasm_bindgen]
-pub fn greet() -> String {
-    "Hello, wasm-worker!".to_string()
+pub fn md5sum(buf: &str) -> String {
+    format!("{:x}",md5::compute(buf))
 }
+
+#[wasm_bindgen]
+pub fn base64(buf: &str) -> String {
+    base64::encode(buf)
+}
+  
