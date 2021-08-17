@@ -15,3 +15,13 @@ cfg_if! {
         pub fn set_panic_hook() {}
     }
 }
+
+pub fn md5sum(buf: &str) -> String { format!("{:x}", md5::compute(buf)) }
+
+pub fn base64(buf: &str) -> String { base64::encode(buf) }
+
+pub fn month() -> u32 {
+    use chrono::{Utc, Datelike};
+    let now = Utc::now();
+    now.month()
+}

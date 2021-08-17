@@ -2,7 +2,37 @@ addEventListener('fetch', event => {
 	event.respondWith(handleRequest(event.request))
 })
 
-const { md5sum, base64 } = wasm_bindgen;
+async function handleRequest(request) {
+	const { handle } = wasm_bindgen;
+	await wasm_bindgen(wasm);
+	let response;
+	try {
+		response = await handle(request, v2ray, shadowsocks);
+	} catch (error) {
+		response = new Response(JSON.stringify(error), {
+			status: 500,
+			statusText: 'Internal Server Error',
+			headers: {
+				'content-type': 'plain/text'
+			}
+		})
+	}
+	return response;
+}
+
+/**
+async function handleRequest(request) {
+	const url = new URL(request.url);
+	if (url.pathname == '/subscribe' && request.method == 'GET') {
+		return await subscribe(url.searchParams);
+	}
+	if (url.pathname.startsWith('/register') && request.method == 'POST') {
+		const sub_path = url.pathname.substring('/register'.length);
+		return await register(request, sub_path);
+	}
+	return not_found();
+}
+
 
 // cloudflare kv bindings
 const kv = {
@@ -43,20 +73,6 @@ function new_response(message) {
 	});
 }
 
-async function handleRequest(request) {
-	await wasm_bindgen(wasm);
-
-	const url = new URL(request.url);
-	if (url.pathname == '/subscribe' && request.method == 'GET') {
-		return await subscribe(url.searchParams);
-	}
-	if (url.pathname.startsWith('/register') && request.method == 'POST') {
-		const sub_path = url.pathname.substring('/register'.length);
-		return await register(request, sub_path);
-	}
-	return not_found();
-}
-
 async function register(request, sub_path) {
 	const data = await request.json();
 	switch (sub_path) {
@@ -68,6 +84,7 @@ async function register(request, sub_path) {
 			return not_found();
 	}
 }
+**/
 
 /**
 v2ray params
@@ -100,14 +117,13 @@ async function register_shadowsocks(data) {
 	return new_response(`${tag} registered`);
 }
 
+/**
 async function subscribe(form) {
 	const token = form.get('token');
 	const proto = form.get('proto');
-	console.log(token, proto);
 
 	const month = new Date().getMonth() + 1;
 	const valid_token = md5sum(month.toString());
-	console.log('check!');
 	if (token != valid_token) {
 		return not_found();
 	}
@@ -144,3 +160,4 @@ async function subscribe_shadowsocks() {
 	let res = Promise.all(tasks);
 	return new_response((await res).join('\n'));
 }
+**/
