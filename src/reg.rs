@@ -7,7 +7,8 @@ pub async fn register(
     request: &Request,
     sub_path: &str,
 ) -> Result<Response, JsValue> {
-    let data = JsFuture::from(request.json()?).await?;
+    let data: Promise = request.json()?;
+    let data = JsFuture::from(data).await?;
     match sub_path {
         "/v2ray" => {
             let data: V2rayConfig =

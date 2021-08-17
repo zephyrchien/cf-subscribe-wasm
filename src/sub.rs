@@ -24,11 +24,26 @@ pub async fn subscribe(
     let res: JsValue =
         kv.list(JsValue::NULL, JsValue::NULL, JsValue::NULL).await?;
     let res: ListResult = res.into_serde().map_err(|e| e.to_string())?;
-    let mut text = Vec::<String>::new();
+
+    /*let mut text = Vec::<String>::new();
     for key in res.keys {
         let link: JsValue = kv.get(key.name.into(), JsValue::NULL).await?;
         let link: String = link.into_serde().map_err(|e| e.to_string())?;
         text.push(link)
-    }
+    }*/
+    let text: Vec<String> =
+        futures::future::try_join_all(res.keys.into_iter().map(|key| async {
+            let link: JsValue =
+                match kv.get(key.name.into(), JsValue::NULL).await {
+                    Ok(x) => x,
+                    Err(e) => return Err(e),
+                };
+            let link: String = match link.into_serde() {
+                Ok(x) => x,
+                Err(e) => return Err(e.to_string().into()),
+            };
+            Ok(link)
+        }))
+        .await?;
     http::new_response(&text.join("\n"))
 }

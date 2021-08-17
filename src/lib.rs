@@ -54,6 +54,7 @@ pub async fn handle(
     kv_v2: WorkersKv,
     kv_ss: WorkersKv,
 ) -> Result<Response, JsValue> {
+    utils::set_panic_hook();
     let ctx = Context { kv_v2, kv_ss };
     let url: Url = Url::new(&request.url())?;
     let path: String = url.pathname();

@@ -2,6 +2,7 @@ use serde::{Deserialize, Serialize};
 
 pub use wasm_bindgen::prelude::*;
 pub use wasm_bindgen_futures::JsFuture;
+pub use js_sys::Promise;
 pub use web_sys::{Request, Response, ResponseInit, Url, UrlSearchParams};
 
 #[derive(Serialize, Deserialize)]
