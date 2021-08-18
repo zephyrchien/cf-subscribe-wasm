@@ -5,6 +5,9 @@ use crate::WorkersKv;
 #[inline]
 pub async fn get<T: Into<JsValue>>(kv: &WorkersKv, key: T) -> Result<String> {
     let res: JsValue = kv.get(key.into(), JsValue::NULL).await?;
+    if res.is_undefined() || res.is_null() {
+        return Err(Error::InvalidKey(String::from("invalid key: null")));
+    }
     let res: String = res.into_serde()?;
     Ok(res)
 }

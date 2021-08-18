@@ -23,7 +23,7 @@ async function handleRequest(request) {
 			config
 		);
 	} catch (error) {
-		response = new Response(JSON.stringify(error), {
+		response = new Response(JSON.stringify(error) + '\n', {
 			status: 500,
 			statusText: 'Internal Server Error',
 			headers: {

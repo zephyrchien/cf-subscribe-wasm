@@ -5,6 +5,7 @@ use serde_json::Error as SerdeError;
 pub enum Error {
     Js(JsValue),
     Serde(SerdeError),
+    InvalidKey(String),
 }
 
 pub type Result<T> = std::result::Result<T, Error>;
@@ -23,6 +24,7 @@ impl From<Error> for JsValue {
         match e {
             Js(e) => e,
             Serde(e) => e.to_string().into(),
+            InvalidKey(e) => e.into(),
         }
     }
 }

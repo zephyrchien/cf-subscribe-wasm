@@ -97,7 +97,7 @@ pub struct V2rayConfig {
     pub host: String,
     pub path: String,
     pub tls: String,
-    pub sni: String
+    pub sni: String,
 }
 
 #[derive(Serialize, Deserialize)]
