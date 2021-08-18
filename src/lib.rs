@@ -2,6 +2,7 @@ mod sub;
 mod reg;
 mod http;
 mod types;
+mod error;
 mod utils;
 
 use cfg_if::cfg_if;
@@ -61,11 +62,11 @@ pub async fn handle(
     let method: String = request.method();
     if path == "/subscribe" && method == "GET" {
         let form: UrlSearchParams = url.search_params();
-        return sub::subscribe(&ctx, &form).await;
+        return Ok(sub::subscribe(&ctx, &form).await?);
     }
     if path.starts_with("/register") && method == "POST" {
         let sub_path = &path["/register".len()..];
-        return reg::register(&ctx, &request, sub_path).await;
+        return Ok(reg::register(&ctx, &request, sub_path).await?);
     }
-    http::not_found()
+    Ok(http::not_found())
 }

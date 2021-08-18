@@ -1,49 +1,43 @@
 use crate::http;
 use crate::utils;
 use crate::types::*;
+use crate::error::*;
 
 pub async fn register(
     ctx: &Context,
     request: &Request,
     sub_path: &str,
-) -> Result<Response, JsValue> {
+) -> Result<Response> {
     let data: Promise = request.json()?;
     let data = JsFuture::from(data).await?;
     match sub_path {
         "/v2ray" => {
-            let data: V2rayConfig =
-                data.into_serde().map_err(|e| e.to_string())?;
+            let data: V2rayConfig = data.into_serde()?;
             register_v2ray(ctx, &data).await
         }
         "/shadowsocks" => {
-            let data: ShadowsocksConfig =
-                data.into_serde().map_err(|e| e.to_string())?;
+            let data: ShadowsocksConfig = data.into_serde()?;
             register_shadowsocks(ctx, &data).await
         }
-        _ => http::not_found(),
+        _ => Ok(http::not_found()),
     }
 }
 
-async fn register_v2ray(
-    ctx: &Context,
-    data: &V2rayConfig,
-) -> Result<Response, JsValue> {
+async fn register_v2ray(ctx: &Context, data: &V2rayConfig) -> Result<Response> {
     let tag = &data.ps;
-    let link = format!(
-        "vmess://{}",
-        utils::base64(&serde_json::to_string(data).map_err(|e| e.to_string())?)
-    );
+    let link =
+        format!("vmess://{}", utils::base64(&serde_json::to_string(data)?));
     let _ = ctx
         .kv_v2
         .put(tag.into(), link.into(), JsValue::NULL)
         .await?;
-    http::new_response("registered")
+    Ok(http::new_response("registered"))
 }
 
 async fn register_shadowsocks(
     ctx: &Context,
     data: &ShadowsocksConfig,
-) -> Result<Response, JsValue> {
+) -> Result<Response> {
     let tag = &data.tag;
     let link = format!(
         "ss://{}@{}:{}#{}",
@@ -56,5 +50,5 @@ async fn register_shadowsocks(
         .kv_ss
         .put(tag.into(), link.into(), JsValue::NULL)
         .await?;
-    http::new_response("registered")
+    Ok(http::new_response("registered"))
 }
