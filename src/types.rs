@@ -5,6 +5,16 @@ pub use wasm_bindgen_futures::JsFuture;
 pub use js_sys::Promise;
 pub use web_sys::{Request, Response, ResponseInit, Url, UrlSearchParams};
 
+// ===== config =====
+#[derive(Serialize, Deserialize)]
+pub struct Config {
+    pub passwd: String,
+    pub get_path: String,
+    pub put_path: String,
+    pub delete_path: String,
+    pub subscribe_path: String,
+}
+
 // ===== ctx =====
 pub struct Context {
     pub kv_v2: crate::WorkersKv,

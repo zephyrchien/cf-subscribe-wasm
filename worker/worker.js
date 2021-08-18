@@ -5,9 +5,22 @@ addEventListener('fetch', event => {
 async function handleRequest(request) {
 	const { handle } = wasm_bindgen;
 	await wasm_bindgen(wasm);
+
 	let response;
+	const config = {
+		passwd: 'passwd',
+		get_path: '/fetch',
+		put_path: '/register',
+		delete_path: '/revoke',
+		subscribe_path: '/subscribe'
+	};
+
 	try {
-		response = await handle(request, v2ray, shadowsocks, 'passwd');
+		response = await handle(
+			request,
+			v2ray, shadowsocks, // kv binding
+			config
+		);
 	} catch (error) {
 		response = new Response(JSON.stringify(error), {
 			status: 500,

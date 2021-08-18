@@ -61,24 +61,42 @@ pub async fn handle(
     request: Request,
     kv_v2: WorkersKv,
     kv_ss: WorkersKv,
-    passwd: String,
+    config: JsValue,
 ) -> Result<Response, JsValue> {
     utils::set_panic_hook();
+
+    let Config { 
+        passwd, 
+        ref get_path, ref put_path,
+        ref delete_path, ref subscribe_path
+    } = config.into_serde().map_err(|e| e.to_string())?;
+
     let ctx = Context {
         kv_v2,
         kv_ss,
         passwd,
     };
+    
     let url: Url = Url::new(&request.url())?;
     let path: String = url.pathname();
     let form: Form = url.search_params().into();
-    let m: String = request.method();
+    let method: String = request.method();
 
-    Ok(match path.as_str() {
-        "/register" if m == "POST" => crud::register(&ctx, &request, &form).await?,
-        "/fetch" if m == "GET" => crud::fetch(&ctx, &form).await?,
-        "/revoke" if m == "GET" => crud::revoke(&ctx, &form).await?,
-        "/subscribe" if m == "GET" => crud::subscribe(&ctx, &form).await?,
-        _ => http::not_found(),
-    })
+    if path == *subscribe_path && method == "GET"{
+        return Ok(crud::subscribe(&ctx, &form).await?);
+    }
+
+    if path == *get_path && method == "GET" {
+        return Ok(crud::fetch(&ctx, &form).await?)
+    }
+    
+    if path == *put_path && method == "POST" {
+        return Ok(crud::register(&ctx, &request, &form).await?)
+    }
+
+    if path == *delete_path && method == "GET" {
+        return Ok(crud::revoke(&ctx, &form).await?)
+    }
+
+    Ok(http::not_found())
 }
