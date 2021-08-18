@@ -93,3 +93,18 @@ pub async fn revoke(ctx: &Context, form: &Form) -> Result<Response> {
     kv::delete(kv, key).await?;
     return Ok(http::new_response(&format!("revoked: {}\n", &key)));
 }
+
+pub async fn list(ctx: &Context, form: &Form) -> Result<Response> {
+    check!(form, &ctx.passwd, true);
+
+    let proto = form.proto.as_ref().unwrap().as_str();
+    let kv = match proto {
+        "v2" | "v2ray" => &ctx.kv_v2,
+        "ss" | "shadowsocks" => &ctx.kv_ss,
+        _ => return Ok(http::not_found()),
+    };
+
+    let list = kv::list(kv).await?;
+    let keys: Vec<String> = list.keys.into_iter().map(|key| key.name).collect();
+    Ok(http::new_response(&format!("tags:\n{}\n", keys.join(", "))))
+}

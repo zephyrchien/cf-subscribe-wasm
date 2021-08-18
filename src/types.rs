@@ -11,6 +11,7 @@ pub struct Config {
     pub passwd: String,
     pub get_path: String,
     pub put_path: String,
+    pub list_path: String,
     pub delete_path: String,
     pub subscribe_path: String,
 }

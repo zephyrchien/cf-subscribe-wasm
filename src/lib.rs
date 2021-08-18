@@ -67,7 +67,7 @@ pub async fn handle(
 
     let Config { 
         passwd, 
-        ref get_path, ref put_path,
+        ref get_path, ref put_path, ref list_path,
         ref delete_path, ref subscribe_path
     } = config.into_serde().map_err(|e| e.to_string())?;
 
@@ -92,6 +92,10 @@ pub async fn handle(
     
     if path == *put_path && method == "POST" {
         return Ok(crud::register(&ctx, &request, &form).await?)
+    }
+
+    if path == *list_path && method == "GET" {
+        return Ok(crud::list(&ctx, &form).await?)
     }
 
     if path == *delete_path && method == "GET" {

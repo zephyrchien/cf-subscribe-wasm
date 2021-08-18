@@ -11,6 +11,7 @@ async function handleRequest(request) {
 		passwd: 'passwd',
 		get_path: '/fetch',
 		put_path: '/register',
+		list_path: '/list',
 		delete_path: '/revoke',
 		subscribe_path: '/subscribe'
 	};
