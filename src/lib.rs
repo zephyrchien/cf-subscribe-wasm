@@ -1,3 +1,4 @@
+mod kv;
 mod sub;
 mod reg;
 mod http;
@@ -70,7 +71,7 @@ pub async fn handle(
     if path == "/subscribe" && method == "GET" {
         return Ok(sub::subscribe(&ctx, &form).await?);
     }
-    if path.starts_with("/register") && method == "POST" {
+    if path == "/register" && method == "POST" {
         return Ok(reg::register(&ctx, &request, &form).await?);
     }
     Ok(http::not_found())

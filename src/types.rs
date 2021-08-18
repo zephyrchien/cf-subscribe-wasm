@@ -48,6 +48,7 @@ pub struct Form {
 
 impl Form {
     #[rustfmt::skip]
+    #[inline]
     pub fn auth(&self, passwd: &str, allow_token: bool) -> bool {
         use crate::utils::month;
         use crate::utils::md5sum;
