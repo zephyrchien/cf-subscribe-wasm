@@ -41,6 +41,7 @@ pub struct Headers {
 }
 
 pub struct Form {
+    pub tag: Option<String>,
     pub proto: Option<String>,
     pub passwd: Option<String>,
     pub token: Option<String>,
@@ -62,6 +63,7 @@ impl Form {
 impl From<UrlSearchParams> for Form {
     fn from(params: UrlSearchParams) -> Self {
         Form {
+            tag: params.get("tag"),
             proto: params.get("proto"),
             passwd: params.get("passwd"),
             token: params.get("token"),

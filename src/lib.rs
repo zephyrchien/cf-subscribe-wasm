@@ -1,7 +1,6 @@
 mod kv;
-mod sub;
-mod reg;
 mod http;
+mod crud;
 mod types;
 mod error;
 mod utils;
@@ -42,6 +41,12 @@ extern "C" {
     ) -> Result<JsValue, JsValue>;
 
     #[wasm_bindgen(structural, method, catch)]
+    pub async fn delete(
+        this: &WorkersKv,
+        key: JsValue,
+    ) -> Result<JsValue, JsValue>;
+
+    #[wasm_bindgen(structural, method, catch)]
     pub async fn list(
         this: &WorkersKv,
         prefix: JsValue,
@@ -50,6 +55,7 @@ extern "C" {
     ) -> Result<JsValue, JsValue>;
 }
 
+#[rustfmt::skip]
 #[wasm_bindgen]
 pub async fn handle(
     request: Request,
@@ -65,14 +71,14 @@ pub async fn handle(
     };
     let url: Url = Url::new(&request.url())?;
     let path: String = url.pathname();
-    let method: String = request.method();
     let form: Form = url.search_params().into();
+    let m: String = request.method();
 
-    if path == "/subscribe" && method == "GET" {
-        return Ok(sub::subscribe(&ctx, &form).await?);
-    }
-    if path == "/register" && method == "POST" {
-        return Ok(reg::register(&ctx, &request, &form).await?);
-    }
-    Ok(http::not_found())
+    Ok(match path.as_str() {
+        "/register" if m == "POST" => crud::register(&ctx, &request, &form).await?,
+        "/fetch" if m == "GET" => crud::fetch(&ctx, &form).await?,
+        "/revoke" if m == "GET" => crud::revoke(&ctx, &form).await?,
+        "/subscribe" if m == "GET" => crud::subscribe(&ctx, &form).await?,
+        _ => http::not_found(),
+    })
 }

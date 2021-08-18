@@ -20,6 +20,12 @@ where
 }
 
 #[inline]
+pub async fn delete<T: Into<JsValue>>(kv: &WorkersKv, key: T) -> Result<()> {
+    kv.delete(key.into()).await?;
+    Ok(())
+}
+
+#[inline]
 pub async fn list(kv: &WorkersKv) -> Result<ListResult> {
     let res: JsValue =
         kv.list(JsValue::NULL, JsValue::NULL, JsValue::NULL).await?;
