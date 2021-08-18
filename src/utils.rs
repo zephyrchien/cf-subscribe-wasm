@@ -24,3 +24,15 @@ pub fn month() -> u32 {
     let now = Utc::now();
     now.month()
 }
+
+#[macro_export]
+macro_rules! check {
+    ($form: ident, $passwd: expr, $allow_token: expr) => {
+        if !$form.auth($passwd, $allow_token) {
+            return Ok(crate::http::forbidden());
+        }
+        if $form.proto.is_none() {
+            return Ok(crate::http::not_found());
+        }
+    };
+}

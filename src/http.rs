@@ -1,5 +1,12 @@
 use crate::types::*;
 
+pub fn forbidden() -> Response {
+    let mut init = ResponseInit::new();
+    init.status(403);
+    init.status_text("Forbidden");
+    Response::new_with_opt_str_and_init(None, &init).unwrap()
+}
+
 pub fn not_found() -> Response {
     let mut init = ResponseInit::new();
     init.status(404);

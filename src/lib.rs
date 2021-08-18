@@ -54,19 +54,24 @@ pub async fn handle(
     request: Request,
     kv_v2: WorkersKv,
     kv_ss: WorkersKv,
+    passwd: String,
 ) -> Result<Response, JsValue> {
     utils::set_panic_hook();
-    let ctx = Context { kv_v2, kv_ss };
+    let ctx = Context {
+        kv_v2,
+        kv_ss,
+        passwd,
+    };
     let url: Url = Url::new(&request.url())?;
     let path: String = url.pathname();
     let method: String = request.method();
+    let form: Form = url.search_params().into();
+
     if path == "/subscribe" && method == "GET" {
-        let form: UrlSearchParams = url.search_params();
         return Ok(sub::subscribe(&ctx, &form).await?);
     }
     if path.starts_with("/register") && method == "POST" {
-        let sub_path = &path["/register".len()..];
-        return Ok(reg::register(&ctx, &request, sub_path).await?);
+        return Ok(reg::register(&ctx, &request, &form).await?);
     }
     Ok(http::not_found())
 }

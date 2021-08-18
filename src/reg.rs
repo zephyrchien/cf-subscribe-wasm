@@ -1,4 +1,5 @@
 use crate::http;
+use crate::check;
 use crate::utils;
 use crate::types::*;
 use crate::error::*;
@@ -6,16 +7,19 @@ use crate::error::*;
 pub async fn register(
     ctx: &Context,
     request: &Request,
-    sub_path: &str,
+    form: &Form,
 ) -> Result<Response> {
+    check!(form, &ctx.passwd, false);
+
     let data: Promise = request.json()?;
     let data = JsFuture::from(data).await?;
-    match sub_path {
-        "/v2ray" => {
+
+    match form.proto.as_ref().unwrap().as_str() {
+        "v2" | "/v2ray" => {
             let data: V2rayConfig = data.into_serde()?;
             register_v2ray(ctx, &data).await
         }
-        "/shadowsocks" => {
+        "ss" | "/shadowsocks" => {
             let data: ShadowsocksConfig = data.into_serde()?;
             register_shadowsocks(ctx, &data).await
         }

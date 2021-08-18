@@ -7,7 +7,7 @@ async function handleRequest(request) {
 	await wasm_bindgen(wasm);
 	let response;
 	try {
-		response = await handle(request, v2ray, shadowsocks);
+		response = await handle(request, v2ray, shadowsocks, 'passwd');
 	} catch (error) {
 		response = new Response(JSON.stringify(error), {
 			status: 500,
