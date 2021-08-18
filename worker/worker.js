@@ -104,10 +104,10 @@ async function register(request, sub_path) {
 v2ray params
 *	v, ps,
 *	add, port,
-*	id, aid,
+*	id, aid, scy
 *	net, type,
 *	host, path,
-*	tls
+*	tls, sni
 **/
 async function register_v2ray(data) {
 	const tag = data.ps;

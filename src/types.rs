@@ -91,11 +91,13 @@ pub struct V2rayConfig {
     pub port: String,
     pub id: String,
     pub aid: String,
+    pub scy: String,
     pub net: String,
     pub r#type: String,
     pub host: String,
     pub path: String,
     pub tls: String,
+    pub sni: String
 }
 
 #[derive(Serialize, Deserialize)]

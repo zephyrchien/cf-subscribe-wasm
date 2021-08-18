@@ -2,7 +2,8 @@
 
 ## Data Form
 Shoud be **POST** to server to register a new endpoint.
->v2ray params (json):
+
+[v2ray params (v2)](https://github.com/2dust/v2rayN/wiki/%E5%88%86%E4%BA%AB%E9%93%BE%E6%8E%A5%E6%A0%BC%E5%BC%8F%E8%AF%B4%E6%98%8E(ver-2))
 ```json
 {
   "v": "",
@@ -11,14 +12,16 @@ Shoud be **POST** to server to register a new endpoint.
   "port": "",
   "id": "",
   "aid": "",
+  "scy": ""
   "net": "",
   "type": "",
   "host": "",
   "path": "",
-  "tls": ""
+  "tls": "",
+  "sni": ""
 }
 ```
->shadowsocks params (json)
+[shadowsocks params (SIP002)](https://shadowsocks.org/en/wiki/SIP002-URI-Scheme.html)
 ```json
 {
   "tag": "",
