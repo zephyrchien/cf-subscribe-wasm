@@ -6,29 +6,29 @@ Shoud be **POST** to server to register a new endpoint.
 [v2ray params (v2)](https://github.com/2dust/v2rayN/wiki/%E5%88%86%E4%BA%AB%E9%93%BE%E6%8E%A5%E6%A0%BC%E5%BC%8F%E8%AF%B4%E6%98%8E(ver-2))
 ```json
 {
-  "v": "",
-  "ps": "",
-  "add": "",
-  "port": "",
-  "id": "",
-  "aid": "",
-  "scy": ""
-  "net": "",
-  "type": "",
+  "v": "2",
+  "ps": "x",
+  "add": "x.x.x.x",
+  "port": "xxxx",
+  "id": "xx-xx-xx-xx-xx",
+  "aid": "x",
+  "scy": "auto",
+  "net": "tcp",
+  "type": "none",
   "host": "",
-  "path": "",
-  "tls": "",
+  "path": "/",
+  "tls": "tls",
   "sni": ""
 }
 ```
 [shadowsocks params (SIP002)](https://shadowsocks.org/en/wiki/SIP002-URI-Scheme.html)
 ```json
 {
-  "tag": "",
-  "server": "",
-  "server_port": "",
-  "method": "",
-  "password": ""
+  "tag": "x",
+  "server": "x.x.x.x",
+  "server_port": "xxxx",
+  "method": "aes-256-gcm",
+  "password": "xxxxxx"
 }
 ```
 
