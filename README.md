@@ -1,39 +1,115 @@
-# 👷‍♀️🦀🕸️ `rustwasm-worker-template`
+# Subscription Deliver
 
-A template for kick starting a Cloudflare worker project using
-[`wasm-pack`](https://github.com/rustwasm/wasm-pack).
-
-This template is designed for compiling Rust libraries into WebAssembly and
-publishing the resulting worker to Cloudflare's worker infrastructure.
-
-## 🔋 Batteries Included
-
-* [`wasm-bindgen`](https://github.com/rustwasm/wasm-bindgen) for communicating
-  between WebAssembly and JavaScript.
-* [`console_error_panic_hook`](https://github.com/rustwasm/console_error_panic_hook)
-  for logging panic messages to the developer console.
-* [`wee_alloc`](https://github.com/rustwasm/wee_alloc), an allocator optimized
-  for small code size.
-
-## 🚴 Usage
-
-### 🐑 Use `wrangler generate` to Clone this Template
-
-[Learn more about `wrangler generate` here.](https://github.com/cloudflare/wrangler)
-
+## Data Form
+Shoud be **POST** to server to register a new endpoint.
+>v2ray params (json):
+```json
+{
+  "v": "",
+  "ps": "",
+  "add": "",
+  "port": "",
+  "id": "",
+  "aid": "",
+  "net": "",
+  "type": "",
+  "host": "",
+  "path": "",
+  "tls": ""
+}
 ```
-wrangler generate wasm-worker  https://github.com/cloudflare/rustwasm-worker-template.git
-cd wasm-worker
-```
-
-### 🛠️ Build with `wasm-pack build`
-
-```
-wasm-pack build
+>shadowsocks params (json)
+```json
+{
+  "tag": "",
+  "server": "",
+  "server_port": "",
+  "method": "",
+  "password": ""
+}
 ```
 
-### 🔬 Test in Headless Browsers with `wasm-pack test`
-
+## Crud APIs
+### Path
+It is configurable, see `worker/workers.js`
+```shell
+const config = {
+  passwd: 'passwd',
+  get_path: '/fetch',
+  put_path: '/register',
+  list_path: '/list',
+  delete_path: '/revoke',
+  subscribe_path: '/subscribe'
+}
 ```
-wasm-pack test --headless --firefox
+
+### Query Params
+| proto | passwd | tag| token |
+|:--:|:--:|:--:|:--:|
+| must | must | fetch | subscribe |
+- proto: ["v2/v2ray", "ss/shadowsocks"]
+- passwd: string (could be omitted if token is supplied when pulling subscription)
+- tag: string (*optional*)
+- token: string (could replace passwd when pulling subscription)
+
+### Curl Examples
+
+#### Put
+```shell
+curl https://xxx/register?proto=ss&passwd=xxxxxx \
+  -X "POST" -H "content-type: application/json" \
+  -d '{"tag":"jpss", "server": "xxx"...}'
+
+curl https://xxx/register?proto=v2&passwd=xxxxxx \
+  -X "POST" -H "content-type: application/json" \
+  -d @v2ray.json
+```
+> response
+```shell
+registered: jpss
+registered: usv2
+```
+
+#### Get
+```shell
+curl https://xxx/fetch?proto=ss&passwd=xxxxxx&tag=jp
+curl https://xxx/fetch?proto=v2&passwd=xxxxxx&tag=us
+```
+> response
+```shell
+ss://xx:xx@xx:xx#xx
+vmess://xxxxxxxxxxx
+```
+
+#### List
+```shell
+curl https://xxx/list?proto=ss&passwd=xxxxxx
+curl https://xxx/list?proto=v2&passwd=xxxxxx
+```
+> response
+```shell
+tags: jpss, usss, hkss
+tags: jpv2, usv2, hkv2
+```
+
+#### Delete
+```shell
+curl https://xxx/revoke?proto=ss&passwd=xxxxxx&tag=jpss
+curl https://xxx/revoke?proto=v2&passwd=xxxxxx&tag=usv2
+```
+> response
+```shell
+revoked: jpss
+revoked: usv2
+```
+
+#### Subscribe
+```shell
+curl https://xxx/subscribe?proto=ss&passwd=xxxxxx
+curl https://xxx/subscribe?proto=v2&token=xxxxxxx
+```
+>response
+```shell
+base64(array(ss://xxxxxx))
+base64(array(vmess://xxx))
 ```
