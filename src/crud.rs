@@ -97,7 +97,7 @@ pub async fn fetch(ctx: &Context, form: &Form) -> Result<Response> {
         _ => return Ok(http::not_found()),
     };
 
-    return Ok(http::new_response(&link));
+    Ok(http::new_response(&link))
 }
 
 pub async fn revoke(ctx: &Context, form: &Form) -> Result<Response> {
