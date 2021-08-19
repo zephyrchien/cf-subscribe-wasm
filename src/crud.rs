@@ -38,7 +38,7 @@ pub async fn subscribe(ctx: &Context, form: &Form) -> Result<Response> {
         _ => return Ok(http::not_found()),
     };
 
-    Ok(http::new_response(&text.join("\n")))
+    Ok(http::new_response(&utils::base64(&text.join("\n"))))
 }
 
 pub async fn register(
