@@ -83,22 +83,28 @@ impl From<UrlSearchParams> for Form {
 }
 
 // ===== subscribe =====
+#[rustfmt::skip]
 #[derive(Serialize, Deserialize)]
 pub struct V2rayConfig {
-    pub v: String,
+    #[serde(default = "df_v")] pub v: String,
     pub ps: String,
     pub add: String,
     pub port: String,
     pub id: String,
-    pub aid: String,
-    pub scy: String,
+    #[serde(default = "df_aid")] pub aid: String,
+    #[serde(default = "df_scy")] pub scy: String,
     pub net: String,
-    pub r#type: String,
-    pub host: String,
+    #[serde(default = "df_type")] pub r#type: String,
+    #[serde(default)] pub host: String,
     pub path: String,
     pub tls: String,
-    pub sni: String,
+    #[serde(default)] pub sni: String,
 }
+
+fn df_v() -> String { String::from("2") }
+fn df_aid() -> String { String::from("1") }
+fn df_scy() -> String { String::from("auto") }
+fn df_type() -> String { String::from("none") }
 
 #[derive(Serialize, Deserialize)]
 pub struct ShadowsocksConfig {
