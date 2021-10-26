@@ -1,4 +1,5 @@
 # Subscription Deliver
+[Pure Rust Implementation](https://github.com/zephyrchien/native-cf-workers-subscribe)
 
 ## Data Form
 Should be **POST** to server to register a new endpoint.
